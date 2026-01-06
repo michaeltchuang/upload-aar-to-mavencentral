@@ -1,0 +1,45 @@
+# This workflow will build a KMP project and publish to Maven Central
+
+name: Publish AAR To Maven Central
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  build-kmp-walletsdk-libraries:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'zulu'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Publish to Local Bundle Repository
+        env:
+          GITHUB_TAG: ${{ github.ref_name }}
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          export VERSION_TAG=${GITHUB_TAG#v}  # Remove the leading 'v'
+          ./gradlew :libs:clean
+          ./gradlew :libs:publishAlgorandFoundationCryptoPublicationToLocalRepository
+          ./gradlew :libs:publishAlgorandFoundationProviderPublicationToLocalRepository
+
+      - name: Upload to Maven Central
+        env:
+          GITHUB_TAG: ${{ github.ref_name }}
+          CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
+          CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          export VERSION_TAG=${GITHUB_TAG#v}  # Remove the leading 'v'
+          ./gradlew :libs:publishToMavenCentralPortal
