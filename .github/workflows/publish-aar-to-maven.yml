@@ -27,8 +27,7 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          ./gradlew :libs:clean
-          ./gradlew :libs:publishAllPublicationsToLocalRepository
+          ./gradlew :libs:clean :libs:publishAllPublicationsToLocalRepository
 
       - name: Upload to Maven Central
         env:

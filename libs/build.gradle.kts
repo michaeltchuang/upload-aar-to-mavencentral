@@ -19,45 +19,67 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
 }
 
-tasks.register<Jar>("javadocJar") {
-    archiveClassifier.set("javadoc")
-}
+// Configuration for AAR publications - just add more entries here!
+data class AarConfig(
+    val publicationName: String,
+    val artifactId: String,
+    val aarFileName: String,
+    val displayName: String
+)
 
-tasks.register<Jar>("sourcesJar") {
-    archiveClassifier.set("sources")
-    from(android.sourceSets.getByName("main").java.srcDirs)
+val aarConfigs = listOf(
+    AarConfig(
+        publicationName = "AlgorandFoundationCrypto",
+        artifactId = "algorand-foundation-crypto",
+        aarFileName = "crypto-debug.aar",
+        displayName = "AlgorandFoundationCrypto"
+    ),
+    AarConfig(
+        publicationName = "AlgorandFoundationProvider",
+        artifactId = "algorand-foundation-provider",
+        aarFileName = "provider-debug.aar",
+        displayName = "AlgorandFoundationProvider"
+    )
+)
+
+// Create JAR tasks dynamically for each AAR configuration
+val jarTasks = aarConfigs.associate { config ->
+    val sourcesJar = tasks.register<Jar>("${config.publicationName}SourcesJar") {
+        archiveClassifier.set("sources")
+        archiveBaseName.set(config.artifactId)
+        from(android.sourceSets.getByName("main").java.srcDirs)
+    }
+
+    val javadocJar = tasks.register<Jar>("${config.publicationName}JavadocJar") {
+        archiveClassifier.set("javadoc")
+        archiveBaseName.set(config.artifactId)
+    }
+
+    config.publicationName to (sourcesJar to javadocJar)
 }
 
 afterEvaluate {
     val versionTag = "0.1.0"
+    val groupId = "com.michaeltchuang.algokit"
+
     publishing {
         publications {
-            create<MavenPublication>("AlgorandFoundationCrypto") {
-                artifact(file("crypto-debug.aar")) {
-                    extension = "aar"
+            // Create publications dynamically from configuration
+            aarConfigs.forEach { config ->
+                create<MavenPublication>(config.publicationName) {
+                    artifact(file(config.aarFileName)) {
+                        extension = "aar"
+                    }
+
+                    val (sourcesJar, javadocJar) = jarTasks[config.publicationName]!!
+                    artifact(sourcesJar)
+                    artifact(javadocJar)
+
+                    this.groupId = groupId
+                    artifactId = config.artifactId
+                    version = versionTag
+                    setupPom(config.displayName)
                 }
-
-                artifact(tasks.named("sourcesJar"))
-                artifact(tasks.named("javadocJar"))
-
-                groupId = "com.michaeltchuang.algokit"
-                artifactId = "algorand-foundation-crypto"
-                version = versionTag
-                setupPom("AlgorandFoundationCrypto")
-            }
-
-            create<MavenPublication>("AlgorandFoundationProvider") {
-                artifact(file("provider-debug.aar")) {
-                    extension = "aar"
-                }
-
-                artifact(tasks.named("sourcesJar"))
-                artifact(tasks.named("javadocJar"))
-
-                groupId = "com.michaeltchuang.algokit"
-                artifactId = "algorand-foundation-provider"
-                version = versionTag
-                setupPom("AlgorandFoundationProvider")
             }
         }
 
@@ -71,7 +93,6 @@ afterEvaluate {
 }
 
 signing {
-    // About GPG signing, please refer to https://central.sonatype.org/publish/requirements/gpg/
     val signingKey = System.getenv("GPG_PRIVATE_KEY") ?: ""
     val signingPassword = System.getenv("GPG_PASSPHRASE") ?: ""
     useInMemoryPgpKeys(signingKey, signingPassword)
