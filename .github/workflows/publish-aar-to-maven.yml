@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  build-kmp-walletsdk-libraries:
+  publish-aar-to-mavencentral:
     runs-on: macos-latest
     steps:
       - name: Checkout Code
