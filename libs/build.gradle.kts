@@ -1,11 +1,11 @@
 import java.util.Base64
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
     id("maven-publish")
     id("signing")
-    id("tech.yanand.maven-central-publish") version "1.3.0"
+    alias(libs.plugins.maven.central.publish)
 }
 
 android {
@@ -16,7 +16,7 @@ android {
             withJavadocJar()
         }
     }
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk = libs.versions.compileSdk.get().toInt()
 }
 
 tasks.register<Jar>("javadocJar") {
