@@ -29,7 +29,7 @@ tasks.register<Jar>("sourcesJar") {
 }
 
 afterEvaluate {
-    val versionTag = System.getenv("VERSION_TAG") ?: "0.1.0"
+    val versionTag = "0.1.0"
     publishing {
         publications {
             create<MavenPublication>("AlgorandFoundationCrypto") {

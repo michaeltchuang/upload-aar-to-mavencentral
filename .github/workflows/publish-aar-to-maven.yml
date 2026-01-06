@@ -24,22 +24,17 @@ jobs:
 
       - name: Publish to Local Bundle Repository
         env:
-          GITHUB_TAG: ${{ github.ref_name }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          export VERSION_TAG=${GITHUB_TAG#v}  # Remove the leading 'v'
           ./gradlew :libs:clean
-          ./gradlew :libs:publishAlgorandFoundationCryptoPublicationToLocalRepository
-          ./gradlew :libs:publishAlgorandFoundationProviderPublicationToLocalRepository
+          ./gradlew :libs:publishAllPublicationsToLocalRepository
 
       - name: Upload to Maven Central
         env:
-          GITHUB_TAG: ${{ github.ref_name }}
           CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
           CENTRAL_PASSWORD: ${{ secrets.CENTRAL_PASSWORD }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          export VERSION_TAG=${GITHUB_TAG#v}  # Remove the leading 'v'
           ./gradlew :libs:publishToMavenCentralPortal
