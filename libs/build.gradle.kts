@@ -28,17 +28,29 @@ data class AarConfig(
 )
 
 val aarConfigs = listOf(
+//    AarConfig(
+//        publicationName = "AlgorandFoundationCrypto",
+//        artifactId = "algorand-foundation-crypto",
+//        aarFileName = "crypto-debug.aar",
+//        displayName = "AlgorandFoundationCrypto"
+//    ),
+//    AarConfig(
+//        publicationName = "AlgorandFoundationProvider",
+//        artifactId = "algorand-foundation-provider",
+//        aarFileName = "provider-debug.aar",
+//        displayName = "AlgorandFoundationProvider"
+//    )
     AarConfig(
-        publicationName = "AlgorandFoundationCrypto",
-        artifactId = "algorand-foundation-crypto",
-        aarFileName = "crypto-debug.aar",
-        displayName = "AlgorandFoundationCrypto"
+        publicationName = "AlgoKitCoreCrypto",
+        artifactId = "algokit-core-crypto",
+        aarFileName = "algokit_crypto.aar",
+        displayName = "AlgoKitCoreCrypto"
     ),
     AarConfig(
-        publicationName = "AlgorandFoundationProvider",
-        artifactId = "algorand-foundation-provider",
-        aarFileName = "provider-debug.aar",
-        displayName = "AlgorandFoundationProvider"
+        publicationName = "AlgoKitCoreTransact",
+        artifactId = "algokit-core-transact",
+        aarFileName = "algokit_transact.aar",
+        displayName = "AlgoKitCoreTransact"
     )
 )
 
@@ -115,8 +127,8 @@ mavenCentral {
 }
 
 tasks.register("publishAllToMavenLocal") {
-    dependsOn("publishAlgorandFoundationCryptoPublicationToMavenLocal")
-    dependsOn("publishAlgorandFoundationProviderPublicationToMavenLocal")
+    dependsOn("publishAlgoKitCoreCryptoPublicationToMavenLocal")
+    dependsOn("publishAlgoKitCoreTransactPublicationToMavenLocal")
 }
 
 // Helper function to configure POM metadata
