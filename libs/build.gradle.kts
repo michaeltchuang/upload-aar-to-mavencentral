@@ -41,17 +41,23 @@ val aarConfigs = listOf(
 //        displayName = "AlgorandFoundationProvider"
 //    )
     AarConfig(
-        publicationName = "AlgoKitCoreCrypto",
-        artifactId = "algokit-core-crypto",
+        publicationName = "AlgoKitCrypto",
+        artifactId = "algokit-crypto",
         aarFileName = "algokit_crypto.aar",
-        displayName = "AlgoKitCoreCrypto"
+        displayName = "AlgoKit-Crypto"
     ),
     AarConfig(
-        publicationName = "AlgoKitCoreTransact",
-        artifactId = "algokit-core-transact",
+        publicationName = "AlgoKitTransact",
+        artifactId = "algokit-transact",
         aarFileName = "algokit_transact.aar",
-        displayName = "AlgoKitCoreTransact"
-    )
+        displayName = "AlgoKit-Transact"
+    ),
+    AarConfig(
+    publicationName = "AlgoKitAlgo25",
+    artifactId = "algokit-algo25",
+    aarFileName = "algokit_algo25.aar",
+    displayName = "AlgoKit-Algo25"
+)
 )
 
 // Create JAR tasks dynamically for each AAR configuration
@@ -71,7 +77,7 @@ val jarTasks = aarConfigs.associate { config ->
 }
 
 afterEvaluate {
-    val versionTag = "0.1.0"
+    val versionTag = "0.3.0"
     val groupId = "com.michaeltchuang.algokit"
 
     publishing {
@@ -127,8 +133,9 @@ mavenCentral {
 }
 
 tasks.register("publishAllToMavenLocal") {
-    dependsOn("publishAlgoKitCoreCryptoPublicationToMavenLocal")
-    dependsOn("publishAlgoKitCoreTransactPublicationToMavenLocal")
+    dependsOn("publishAlgoKitCryptoPublicationToMavenLocal")
+    dependsOn("publishAlgoKitTransactPublicationToMavenLocal")
+    dependsOn("publishAlgoKitAlgo25PublicationToMavenLocal")
 }
 
 // Helper function to configure POM metadata
