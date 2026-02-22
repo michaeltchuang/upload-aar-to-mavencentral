@@ -77,7 +77,7 @@ val jarTasks = aarConfigs.associate { config ->
 }
 
 afterEvaluate {
-    val versionTag = "0.3.0"
+    val versionTag = "0.5.0"
     val groupId = "com.michaeltchuang.algokit"
 
     publishing {
